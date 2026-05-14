@@ -142,6 +142,34 @@ body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSyst
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+#journey-view{display:none;max-width:680px;margin:0 auto;padding:24px 20px 60px}
+.persona-bar{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.pbtn{flex:1;min-width:110px;padding:10px 12px;border:0.5px solid var(--b);border-radius:var(--r2);background:var(--bg2);cursor:pointer;text-align:left;transition:all .2s;outline:none}
+.pbtn:hover{border-color:var(--bm);background:var(--bg3)}
+.pbtn.sel{border-width:1.5px}
+.pb-icon{font-size:18px;margin-bottom:4px;display:block}
+.pb-label{font-size:12px;font-weight:600;color:var(--t1);display:block;margin-bottom:2px}
+.pb-sub{font-size:10px;color:var(--t3);display:block;line-height:1.4}
+.j-wrap{position:relative}
+.j-step{display:flex;gap:16px;margin-bottom:0;position:relative}
+.j-step:not(:last-child)::after{content:'';position:absolute;left:19px;top:44px;bottom:-24px;width:1.5px;background:linear-gradient(to bottom, var(--jcolor, #4a90e8), rgba(74,144,232,.15));z-index:0}
+.j-num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;z-index:1;position:relative;margin-top:2px;transition:all .3s}
+.j-card{flex:1;border:0.5px solid var(--b);border-radius:var(--r2);padding:14px 16px;background:var(--bg2);margin-bottom:24px;transition:all .3s}
+.j-card.active{border-width:1px}
+.j-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.j-stage{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase}
+.j-plat{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px}
+.j-title{font-size:15px;font-weight:600;color:var(--t1);margin-bottom:5px;line-height:1.4}
+.j-detail{font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:8px}
+.j-action{font-size:11px;color:var(--t3);padding:6px 10px;background:var(--bg3);border-radius:6px;border-left:2px solid;display:flex;align-items:center;gap:6px}
+.j-outcome{text-align:center;padding:20px;border:1.5px solid;border-radius:var(--r2);margin-top:4px}
+.j-outcome-icon{font-size:32px;margin-bottom:8px}
+.j-outcome-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.j-outcome-sub{font-size:12px;opacity:.7}
+.j-header{margin-bottom:20px;text-align:center;padding:16px;border:0.5px solid var(--b);border-radius:var(--r2);background:var(--bg2)}
+.j-header-title{font-size:18px;font-weight:700;color:var(--t1);margin-bottom:4px}
+.j-header-sub{font-size:12px;color:var(--t3)}
+
 .plat-auto{display:flex;align-items:flex-start;gap:7px;padding:7px 10px;border-radius:var(--r);background:rgba(100,100,160,.08);border:0.5px solid rgba(120,120,180,.18);font-size:11px;color:rgba(160,160,210,.85);margin-bottom:8px;line-height:1.5}
 .plat-auto .pai{font-size:14px;flex-shrink:0;margin-top:1px}
 .plat-auto-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(100,100,160,.12);border:0.5px solid rgba(120,120,180,.2);color:rgba(160,160,210,.8);margin-left:auto;flex-shrink:0}
@@ -208,6 +236,7 @@ if(localStorage.getItem('andromeda-auth')==='1'){
   <div class="tg">
     <button class="tgb on" id="tb-est" onclick="setMode('est')">Estructura</button>
     <button class="tgb" id="tb-and" onclick="setMode('and')">Modo ANDROMEDA</button>
+    <button class="tgb" id="tb-jrn" onclick="setMode('jrn')">Journey ↗</button>
   </div>
   <div class="wsel" id="wk-ctrl">
     <span style="font-size:11px;color:var(--t3)">Semana:</span>
@@ -456,8 +485,18 @@ if(localStorage.getItem('andromeda-auth')==='1'){
   </div>
 </div>
 
-<div style="padding:14px 20px;text-align:center;font-size:11px;color:var(--t3);border-top:0.5px solid var(--b)">
+<footer style="padding:14px 20px;text-align:center;font-size:11px;color:var(--t3);border-top:0.5px solid var(--b)">
   ANDROMEDA Journey Map &middot; ProPlus &middot; Destácame &nbsp;&middot;&nbsp; Basado en Google Funnel detalle v2
+</footer>
+
+
+<div id="journey-view">
+  <div class="persona-bar" id="persona-bar"></div>
+  <div class="j-header" id="j-header">
+    <div class="j-header-title" id="jh-title">Selecciona un perfil de usuario</div>
+    <div class="j-header-sub" id="jh-sub">Elige uno de los 5 perfiles para trazar su camino completo</div>
+  </div>
+  <div class="j-wrap" id="j-steps"></div>
 </div>
 
 <script>
@@ -475,7 +514,89 @@ function updateChips(){let tw=0,tp=0;// Also handle new video chip IDs
     'LC2-AD1','LC2-AD2','LC2-AD3','LC2-AD4','LC2-AD5','LC2-AD6','LC2-AD7','LC2-AD8','LC2-AD9',
     'LC3-AD1','LC3-AD2','LC3-AD3'];
   allVideoIds.forEach(id=>{const el=document.getElementById('p-'+id);if(!el)return;const st=chipState(id);el.className='chip'+(mode==='and'?' andro':'');if(mode==='and'){el.className+=' '+st;}if(st==='w')tw++;if(st==='p')tp++;});document.getElementById('st-w').textContent=tw+' ganadores';document.getElementById('st-p').textContent=tp+' pausados';document.getElementById('st-t').textContent=(18-tw-tp)+' testing';}
-function setMode(m){mode=m;document.getElementById('tb-est').classList.toggle('on',m==='est');document.getElementById('tb-and').classList.toggle('on',m==='and');document.getElementById('wk-ctrl').classList.toggle('vis',m==='and');document.getElementById('tp-ctrl').classList.toggle('vis',m==='and');document.getElementById('stats').classList.toggle('vis',m==='and');updateChips();}
+
+const JOURNEYS=[
+  {id:'p1',label:'Nuevo \u00b7 Meta',sublabel:'Vio video \u226550% \u00b7 sin cuenta',icon:'\ud83d\udcf1',color:'#4a90e8',
+   steps:[
+    {stage:'Entrada',plat:'',sc:'#5a5a78',pc:'',title:'Usuario nuevo sin cuenta',detail:'Nunca interactu\u00f3 con Dest\u00e1came. Meta lo incluye en Advantage+ y audiencias de intereses.',action:'Meta incluye en audiencia fr\u00eda'},
+    {stage:'Awareness',plat:'Meta',sc:'#4a90e8',pc:'pm',title:'Ve anuncio en feed \u00b7 Advantage+',detail:'ANDROMEDA reparte entre LC1 \u201cLa Banca\u201d, LC2 \u201c\u00bfConoces Dest\u00e1came?\u201d y LC3 \u201cTelechachara\u201d. El algoritmo elige el creativo seg\u00fan perfil.',action:'Vio \u226550% del video \u2192 entra en audiencia RMKT Tr\u00e1fico'},
+    {stage:'MOFU',plat:'Meta',sc:'#c49020',pc:'pm',title:'RMKT Tr\u00e1fico \u00b7 LC2 Segundas Oportunidades',detail:'Remarketing a quienes vieron +50% del video. CTA informativo: \u201cRevisa c\u00f3mo funciona\u201d. 3 videos + 3 im\u00e1genes.',action:'Hace clic \u2192 llega al consultor financiero'},
+    {stage:'BOFU',plat:'Meta',sc:'#d86040',pc:'pm',title:'RMKT BOFU \u00b7 Registro \u00b7 UGC + Atributos',detail:'Lleg\u00f3 al consultor pero no se registr\u00f3. Ve UGC aut\u00e9ntico + datos duros (2M+ usuarios). CTA retail directo.',action:'Completa registro paso 1/4'},
+    {stage:'\u2713 Logro',plat:'',sc:'#2ea86a',pc:'',title:'Registro completado',detail:'Entra a plataforma. MOFU de email/push activa el consultor y el camino hacia PRO+.',action:'',isOutcome:true}
+  ]},
+  {id:'p2',label:'Nuevo \u00b7 DICOM',sublabel:'"Qu\u00e9 es dicom" \u00b7 Google',icon:'\ud83d\udd0d',color:'#e84a4a',
+   steps:[
+    {stage:'Entrada',plat:'',sc:'#5a5a78',pc:'',title:'Busca "qu\u00e9 es dicom chile"',detail:'Intenci\u00f3n informacional \u2014 quiere entender su situaci\u00f3n financiera. A\u00fan no conoce Dest\u00e1came.',action:'Google lo impacta primero con Display/YouTube'},
+    {stage:'Awareness',plat:'Google',sc:'#4a90e8',pc:'pg',title:'Impresi\u00f3n \u00b7 YouTube Display + Banner',detail:'Ve display de Dest\u00e1came en sitios de finanzas. Reconocimiento de marca previo a la b\u00fasqueda activa.',action:'Impresi\u00f3n visual \u2192 queda en audiencia RMKT'},
+    {stage:'Consideraci\u00f3n',plat:'Google',sc:'#c49020',pc:'pg',title:'Search \u00b7 DICOM ADQ \u00b7 Audiencia abierta',detail:'Anuncio Search para keywords DICOM. Mensaje: \u201cRevisa tu situaci\u00f3n financiera gratis\u201d. Keywords negativas excluyen t\u00e9rminos de pago.',action:'Hace clic \u2192 landing home con consultor'},
+    {stage:'BOFU',plat:'Google',sc:'#d86040',pc:'pg',title:'Search Brand ADQ \u00b7 "Registrarse en Dest\u00e1came"',detail:'Ya conoce la marca. Busca directamente para registrarse. Campa\u00f1a Brand protege el tr\u00e1fico.',action:'Hace clic \u2192 /registro directo'},
+    {stage:'\u2713 Logro',plat:'',sc:'#2ea86a',pc:'',title:'Registro completado',detail:'Entr\u00f3 por intenci\u00f3n informacional (DICOM) y convirti\u00f3 por intenci\u00f3n de marca. Journey t\u00edpico de 3-7 d\u00edas.',action:'',isOutcome:true}
+  ]},
+  {id:'p3',label:'Nuevo \u00b7 cr\u00e9dito urgente',sublabel:'"Cr\u00e9dito r\u00e1pido" \u00b7 alta intenci\u00f3n',icon:'\ud83d\udcb3',color:'#e84a4a',
+   steps:[
+    {stage:'Entrada',plat:'',sc:'#5a5a78',pc:'',title:'Busca "cr\u00e9dito r\u00e1pido chile"',detail:'Alta intenci\u00f3n transaccional \u2014 ya decidi\u00f3 buscar cr\u00e9dito. Solo eval\u00faa d\u00f3nde contratarlo.',action:'Google lo captura directo en Conversi\u00f3n'},
+    {stage:'BOFU directo',plat:'Google',sc:'#d86040',pc:'pg',title:'Search \u00b7 Cr\u00e9ditos ADQ \u00b7 Alta intenci\u00f3n',detail:'Entra directo a Conversi\u00f3n \u2014 sin necesidad de Awareness ni Consideraci\u00f3n. Lenguaje 100% retail: "100% online, inmediato, sin papeles".',action:'Hace clic \u2192 landing /creditos'},
+    {stage:'\u2713 Logro',plat:'',sc:'#2ea86a',pc:'',title:'Registro completado',detail:'Salt\u00f3 awareness y consideraci\u00f3n \u2014 entr\u00f3 por intenci\u00f3n alta directamente a conversi\u00f3n. Journey de 1 sesi\u00f3n.',action:'',isOutcome:true}
+  ]},
+  {id:'p4',label:'Recurrente \u00b7 inactivo',sublabel:'Tiene cuenta \u00b7 60D sin login',icon:'\ud83d\udd04',color:'#2ea86a',
+   steps:[
+    {stage:'Entrada',plat:'',sc:'#5a5a78',pc:'',title:'Usuario con cuenta \u00b7 inactivo 60 d\u00edas',detail:'CRM identifica usuarios sin login en 30-90D. Se carga como exclusi\u00f3n en campa\u00f1as fr\u00edas y como audiencia en campa\u00f1as REACT.',action:'Excluido autom\u00e1ticamente de Awareness y MOFU'},
+    {stage:'Excluido',plat:'Meta',sc:'#5a5a78',pc:'pm',title:'\u2298 Excluido de Awareness y MOFU',detail:'La audiencia CRM act\u00faa como exclusi\u00f3n en todas las campa\u00f1as fr\u00edas. No recibe contenido de awareness \u2014 evita gastar presupuesto en quien ya conoce la marca.',action:'Meta lo clasifica como audiencia REACT'},
+    {stage:'BOFU Login',plat:'Meta',sc:'#2ea86a',pc:'pm',title:'RMKT Login \u00b7 "Retoma donde lo dejaste"',detail:'Custom Audience: registrados sin login 30-90D. Mensaje directo de re-engagement. "Tu historial te espera \u00b7 Sigue mejorando tu score".',action:'Hace clic \u2192 app.destacame.cl/login'},
+    {stage:'\u2713 Logro',plat:'',sc:'#2ea86a',pc:'',title:'Login completado \u00b7 usuario reactivado',detail:'Seg\u00fan su perfil, puede entrar a flujo de activaci\u00f3n PRO+ o retomar donde dej\u00f3 su consultor.',action:'',isOutcome:true}
+  ]},
+  {id:'p5',label:'Recurrente \u00b7 competencia',sublabel:'"Mach cr\u00e9dito" \u00b7 sin PRO+',icon:'\ud83c\udfaf',color:'#2ea86a',
+   steps:[
+    {stage:'Entrada',plat:'',sc:'#5a5a78',pc:'',title:'Tiene cuenta \u00b7 busca cr\u00e9dito en competencia',detail:'Segmento de alto valor: se registr\u00f3 en Dest\u00e1came pero no activ\u00f3 PRO+. Ahora busca cr\u00e9dito en competidores.',action:'Google lo detecta por Customer Match'},
+    {stage:'BOFU directo',plat:'Google',sc:'#d86040',pc:'pg',title:'Search \u00b7 Competencia REACT \u00b7 Customer Match',detail:'Keywords competencia (mach cr\u00e9dito, banco estado consumo). Customer Match identifica usuarios Dest\u00e1came sin PRO+.',action:'"Ya tienes tu perfil en Dest\u00e1came, \u00bfpara qu\u00e9 ir al banco?"'},
+    {stage:'Activaci\u00f3n',plat:'Google',sc:'#2ea86a',pc:'pg',title:'Login \u2192 activar PRO+ en /creditos',detail:'Landing /creditos muestra su cr\u00e9dito pre-calculado. Un clic para activar. Urgencia real: el cr\u00e9dito ya los espera.',action:'Login \u2192 activaci\u00f3n PRO+ completada'},
+    {stage:'\u2713 Logro',plat:'',sc:'#2ea86a',pc:'',title:'Activaci\u00f3n PRO+ completada',detail:'Usuario rescatado antes de irse a la competencia. M\u00e1ximo valor: ya ten\u00eda perfil, solo necesitaba el momento correcto.',action:'',isOutcome:true}
+  ]}
+];
+
+let curPersona=null;
+
+function hexRgb(h){return[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)).join(',');}
+
+function renderPersonaBar(){
+  const bar=document.getElementById('persona-bar');
+  if(!bar)return;
+  bar.innerHTML=JOURNEYS.map((p,i)=>`
+    <button class="pbtn" onclick="selectPersona(${i})" style="border-color:${curPersona===i?p.color:'var(--b)'}">
+      <span class="pb-icon">${p.icon}</span>
+      <span class="pb-label" style="color:${curPersona===i?p.color:'var(--t1)'}">${p.label}</span>
+      <span class="pb-sub">${p.sublabel}</span>
+    </button>`).join('');
+}
+
+function selectPersona(idx){
+  curPersona=idx;
+  const p=JOURNEYS[idx];
+  const hdr=document.getElementById('j-header');
+  if(hdr){hdr.style.borderColor=p.color;document.getElementById('jh-title').textContent=p.icon+'  '+p.label;document.getElementById('jh-sub').textContent=p.sublabel;}
+  renderPersonaBar();
+  const wrap=document.getElementById('j-steps');
+  if(!wrap)return;
+  wrap.style.setProperty('--jcolor',p.color);
+  wrap.innerHTML=p.steps.map((s,i)=>{
+    if(s.isOutcome)return`<div style="text-align:center;padding:20px 16px;border:1.5px solid ${p.color};border-radius:12px;background:rgba(${hexRgb(p.color)},.09)"><div style="font-size:28px;margin-bottom:8px">${p.icon}</div><div style="font-size:16px;font-weight:700;color:${p.color};margin-bottom:4px">${s.title}</div><div style="font-size:12px;color:var(--t2);line-height:1.6">${s.detail}</div></div>`;
+    return`<div class="j-step" style="--jcolor:${p.color}"><div class="j-num" style="background:${s.sc}22;border:1.5px solid ${s.sc}55;color:${s.sc}">${i+1}</div><div class="j-card" style="border-color:${s.sc}40"><div class="j-top"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;background:${s.sc}22;border:0.5px solid ${s.sc}55;color:${s.sc}">${s.stage}</span>${s.plat?`<span class="plat ${s.pc}">${s.plat}</span>`:''}</div><div class="j-title">${s.title}</div><div class="j-detail">${s.detail}</div>${s.action?`<div class="j-action" style="border-left-color:${p.color};color:var(--t2)"><span style="color:${p.color}">&#8594;</span> ${s.action}</div>`:''}</div></div>`;
+  }).join('');
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('tb-est').classList.toggle('on',m==='est');
+  document.getElementById('tb-and').classList.toggle('on',m==='and');
+  document.getElementById('tb-jrn').classList.toggle('on',m==='jrn');
+  document.getElementById('wk-ctrl').classList.toggle('vis',m==='and');
+  document.getElementById('tp-ctrl').classList.toggle('vis',m==='and');
+  document.getElementById('stats').classList.toggle('vis',m==='and');
+  const jv=document.getElementById('journey-view');
+  const toHide=document.querySelectorAll('.plat-bar,.entry-wrap,.stage-row,.decwrap,footer');
+  if(m==='jrn'){jv.style.display='block';toHide.forEach(el=>el.style.display='none');renderPersonaBar();}
+  else{jv.style.display='none';toHide.forEach(el=>el.style.display='');updateChips();}
+}
 function setWk(w){wk=w;[1,2,3].forEach(i=>document.getElementById('wk'+i).classList.toggle('on',i===w));updateChips();}
 function onTP(){tpTh=+document.getElementById('sl-tp').value;document.getElementById('vl-tp').textContent=tpTh+'%';updateChips();}
 updateChips();
