@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANDROMEDA · Journey Map ProPlus · Destácame</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d11;--bg2:#13131a;--bg3:#1a1a24;--bg4:#20202e;
+  --b:rgba(255,255,255,0.07);--bm:rgba(255,255,255,0.14);
+  --t1:#e2e2ee;--t2:#9898b2;--t3:#5a5a78;
+  --blue:#4a90e8;--blue-d:rgba(74,144,232,.14);--blue-b:rgba(74,144,232,.28);
+  --amber:#c49020;--amber-d:rgba(196,144,32,.14);--amber-b:rgba(196,144,32,.28);
+  --coral:#d86040;--coral-d:rgba(216,96,64,.14);--coral-b:rgba(216,96,64,.28);
+  --green:#2ea86a;--green-d:rgba(46,168,106,.16);--green-b:rgba(46,168,106,.3);
+  --red:#e04848;--red-d:rgba(224,72,72,.16);--red-b:rgba(224,72,72,.3);
+  --meta:#4a90e8;--meta-d:rgba(74,144,232,.1);--meta-b:rgba(74,144,232,.22);
+  --goog:#e84a4a;--goog-d:rgba(232,74,74,.1);--goog-b:rgba(232,74,74,.22);
+  --adq:#4a90e8;--adq-d:rgba(74,144,232,.12);--adq-b:rgba(74,144,232,.25);
+  --react:#2ea86a;--react-d:rgba(46,168,106,.12);--react-b:rgba(46,168,106,.25);
+  --r:8px;--r2:12px;--r3:16px;
+}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;min-height:100vh}
+#hdr{position:sticky;top:0;z-index:100;background:rgba(13,13,17,.94);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--bm);padding:9px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--amber)}
+.logo span{color:var(--t3);font-weight:400;font-size:11px;letter-spacing:0;margin-left:6px}
+.tg{display:flex;border:0.5px solid var(--bm);border-radius:var(--r);overflow:hidden;flex-shrink:0}
+.tgb{padding:5px 13px;font-size:12px;font-weight:500;cursor:pointer;background:transparent;color:var(--t2);border:none;transition:all .15s;outline:none}
+.tgb.on{background:var(--bg3);color:var(--t1)}
+.wsel{display:none;align-items:center;gap:5px}
+.wsel.vis{display:flex}
+.wb{padding:3px 9px;font-size:11px;cursor:pointer;background:transparent;color:var(--t2);border:0.5px solid var(--b);border-radius:6px;outline:none;transition:all .15s}
+.wb.on{background:var(--bg3);color:var(--t1);border-color:var(--bm)}
+.tp-wrap{display:none;align-items:center;gap:7px}
+.tp-wrap.vis{display:flex}
+.tp-wrap label{font-size:11px;color:var(--t3)}
+.tp-wrap input{width:72px;accent-color:var(--amber)}
+.tp-v{font-size:12px;font-weight:600;color:var(--amber);min-width:28px}
+.leg{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--t3);margin-left:auto;flex-wrap:wrap}
+.ldot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:2px}
+.ldot.t{background:var(--t3)}.ldot.w{background:var(--green)}.ldot.p{background:var(--red)}
+.stats{display:none;align-items:center;gap:5px;font-size:11px;border-left:0.5px solid var(--b);padding-left:12px}
+.stats.vis{display:flex}
+.plat-bar{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:0.5px solid var(--bm)}
+.plat-col{padding:10px 20px;display:flex;align-items:center;gap:10px}
+.plat-col.ms{border-right:0.5px solid var(--bm)}
+.pi{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.pi-m{background:var(--meta-d);border:0.5px solid var(--meta-b);color:var(--meta)}
+.pi-g{background:var(--goog-d);border:0.5px solid var(--goog-b);color:var(--goog)}
+.pn{font-size:14px;font-weight:700;color:var(--t1)}
+.ps{font-size:11px;color:var(--t3)}
+.pnote{font-size:11px;color:var(--t3);margin-left:auto;font-style:italic}
+.entry-wrap{padding:20px;text-align:center;border-bottom:0.5px solid var(--b)}
+.entry-lbl{font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--t3);text-transform:uppercase;margin-bottom:8px}
+.entry-node{display:inline-block;padding:12px 28px;border:0.5px solid var(--bm);border-radius:var(--r3);font-size:16px;font-weight:600;color:var(--t1);background:var(--bg2)}
+.forks{display:grid;grid-template-columns:1fr 1fr;max-width:560px;margin:14px auto 0}
+.fc{display:flex;flex-direction:column;align-items:center;gap:4px}
+.fp{font-size:12px;font-weight:500;padding:4px 16px;border:0.5px solid var(--b);border-radius:20px;background:var(--bg2);color:var(--t2)}
+.fl{width:0.5px;height:18px;background:var(--bm)}
+.stage-row{border-bottom:0.5px solid var(--b)}
+.stage-lbl{padding:10px 20px;display:flex;align-items:center;gap:10px;border-bottom:0.5px solid var(--b)}
+.sb{font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:.04em;text-transform:uppercase}
+.sb-bl{background:var(--blue-d);border:0.5px solid var(--blue-b);color:var(--blue)}
+.sb-am{background:var(--amber-d);border:0.5px solid var(--amber-b);color:var(--amber)}
+.sb-co{background:var(--coral-d);border:0.5px solid var(--coral-b);color:var(--coral)}
+.stl{font-size:13px;font-weight:600;color:var(--t1)}
+.sts{font-size:11px;color:var(--t3)}
+.scols{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.scol{padding:14px 16px}
+.scol.ms{border-right:0.5px solid var(--b)}
+.pool{border:0.5px dashed var(--bm);border-radius:var(--r2);padding:11px 13px;margin-bottom:10px;background:rgba(255,255,255,.02)}
+.ptop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.plbl{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
+.lcr{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.lcn{font-size:11px;font-weight:500;color:var(--t3);min-width:108px;flex-shrink:0}
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:5px;margin:2px;border:0.5px solid var(--b);color:var(--t3);background:var(--bg3);transition:all .35s;cursor:default}
+.chip.andro{cursor:pointer}.chip.andro:hover{border-color:var(--bm);color:var(--t2)}
+.chip.w{border-color:var(--green-b);background:var(--green-d);color:var(--green)}
+.chip.p{border-color:var(--red-b);background:var(--red-d);color:var(--red)}
+.pnote2{font-size:11px;color:var(--t3);margin-top:6px}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+.ac{border:0.5px solid var(--b);border-radius:var(--r);padding:9px 11px;background:var(--bg2)}
+.an{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:2px}
+.ad{font-size:11px;color:var(--t3);margin-bottom:7px;line-height:1.45}
+.sr{font-size:11px;color:var(--t3);font-style:italic;margin-bottom:6px}
+.lbdg{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 8px;border-radius:12px;background:var(--bg3);color:var(--t2);border:0.5px solid var(--b)}
+.ks{font-size:10px;color:var(--t3)}
+.gcmp{border:0.5px solid var(--b);border-radius:var(--r2);margin-bottom:8px;overflow:hidden;background:var(--bg2)}
+.gcmp.dash{border-style:dashed;opacity:.85}
+.gh{padding:8px 11px;border-bottom:0.5px solid var(--b);background:var(--bg3);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gth{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--t2)}
+.gty{font-size:10px;color:var(--t3);margin-left:auto}
+.gr{padding:8px 11px;border-bottom:0.5px solid var(--b)}
+.gr:last-child{border-bottom:none}
+.ta{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:var(--adq-d);border:0.5px solid var(--adq-b);color:var(--adq);letter-spacing:.04em;margin-right:5px;flex-shrink:0}
+.tr{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:var(--react-d);border:0.5px solid var(--react-b);color:var(--react);letter-spacing:.04em;margin-right:5px;flex-shrink:0}
+.rh{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.rau{font-size:11px;color:var(--t3);margin-bottom:3px}
+.rkw{font-size:11px;color:var(--t2);line-height:1.4;margin-bottom:4px}
+.rl{display:flex;align-items:center;justify-content:space-between}
+.rk{font-size:10px;color:var(--t3)}
+.nb{background:var(--amber-d);border:0.5px solid var(--amber-b);border-radius:var(--r);padding:7px 10px;font-size:11px;color:var(--amber);margin-top:6px;line-height:1.5}
+.nb.grn{background:var(--green-d);border-color:var(--green-b);color:var(--green)}
+.decwrap{border-top:0.5px solid var(--b);border-bottom:0.5px solid var(--b);padding:12px 20px;text-align:center;background:var(--bg2)}
+.dp{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;background:rgba(196,144,32,.1);border:0.5px solid var(--amber-b);border-radius:50px;font-size:13px;font-weight:600;color:var(--amber)}
+.brs{display:grid;grid-template-columns:1fr 1fr 1fr;max-width:700px;margin:10px auto 0}
+.br{display:flex;flex-direction:column;align-items:center;position:relative}
+.br::before{content:'';position:absolute;top:0;height:18px;width:0.5px;background:var(--bm)}
+.brl{margin-top:18px;text-align:center;font-size:12px;color:var(--t2);padding:0 6px}
+.brl strong{display:block;font-size:13px;font-weight:600;color:var(--t1);margin-top:1px}
+.bsig{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px}
+.bsbl{background:var(--blue-d);border:0.5px solid var(--blue-b);color:var(--blue)}
+.bsam{background:var(--amber-d);border:0.5px solid var(--amber-b);color:var(--amber)}
+.mgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.cmp{border:0.5px solid var(--b);border-radius:var(--r2);overflow:hidden;background:var(--bg2)}
+.cmp.dash{border-style:dashed;opacity:.8}
+.cmph{padding:8px 11px;border-bottom:0.5px solid var(--b);background:var(--bg3);display:flex;align-items:center;gap:7px}
+.cts{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--t3)}
+.cn{font-size:13px;font-weight:600;color:var(--t1)}
+.cmpb{padding:10px 11px}
+.asub{font-size:11px;padding:3px 7px;border-radius:5px;background:var(--bg3);border:0.5px solid var(--b);color:var(--t2);margin-bottom:3px}
+.crr{margin:7px 0 3px}
+.crl{font-size:10px;color:var(--t3);font-weight:500;margin-bottom:3px}
+.crn{font-size:12px;font-weight:600;color:var(--t1)}
+.crs{font-size:11px;color:var(--t3)}
+.cl{display:flex;align-items:center;justify-content:space-between;margin-top:7px}
+.k2{font-size:10px;color:var(--t3)}
+.bgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.plat{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.02em;flex-shrink:0}
+.pm{background:var(--meta-d);color:var(--meta);border:0.5px solid var(--meta-b)}
+.pg{background:var(--goog-d);color:var(--goog);border:0.5px solid var(--goog-b)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+.plat-auto{display:flex;align-items:flex-start;gap:7px;padding:7px 10px;border-radius:var(--r);background:rgba(100,100,160,.08);border:0.5px solid rgba(120,120,180,.18);font-size:11px;color:rgba(160,160,210,.85);margin-bottom:8px;line-height:1.5}
+.plat-auto .pai{font-size:14px;flex-shrink:0;margin-top:1px}
+.plat-auto-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(100,100,160,.12);border:0.5px solid rgba(120,120,180,.2);color:rgba(160,160,210,.8);margin-left:auto;flex-shrink:0}
+.ch-div{display:flex;align-items:center;gap:8px;margin:12px 0 7px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3)}
+.ch-div::before,.ch-div::after{content:'';flex:1;height:0.5px;background:var(--b)}
+.andromeda-badge{display:none}
+.andro-mode .andromeda-badge{display:inline-flex}
+
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div class="logo">ANDROMEDA <span>Journey Map · ProPlus · Destácame</span></div>
+  <div class="tg">
+    <button class="tgb on" id="tb-est" onclick="setMode('est')">Estructura</button>
+    <button class="tgb" id="tb-and" onclick="setMode('and')">Modo ANDROMEDA</button>
+  </div>
+  <div class="wsel" id="wk-ctrl">
+    <span style="font-size:11px;color:var(--t3)">Semana:</span>
+    <button class="wb" id="wk1" onclick="setWk(1)">S1</button>
+    <button class="wb on" id="wk2" onclick="setWk(2)">S2</button>
+    <button class="wb" id="wk3" onclick="setWk(3)">S3</button>
+  </div>
+  <div class="tp-wrap" id="tp-ctrl">
+    <label>ThruPlay% &ge;</label>
+    <input type="range" min="10" max="28" step="1" id="sl-tp" value="18" oninput="onTP()">
+    <span class="tp-v" id="vl-tp">18%</span>
+  </div>
+  <div class="leg">
+    <span><span class="ldot t"></span>Testing</span>
+    <span style="width:0.5px;height:14px;background:var(--b);display:inline-block"></span>
+    <span><span style="display:inline-block;font-size:11px;margin-right:3px">⚡</span>Plataforma optimiza</span>
+    <span><span class="ldot w"></span>Ganador</span>
+    <span><span class="ldot p"></span>Pausado</span>
+    <span style="width:0.5px;height:14px;background:var(--b);display:inline-block"></span>
+    <span><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:var(--adq);margin-right:3px"></span>ADQ — nuevo</span>
+    <span><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:var(--react);margin-right:3px"></span>REACT — con cuenta</span>
+  </div>
+  <div class="stats" id="stats">
+    <span style="color:var(--green)" id="st-w">0 ganadores</span>
+    <span style="color:var(--t3)">·</span>
+    <span style="color:var(--red)" id="st-p">0 pausados</span>
+    <span style="color:var(--t3)">·</span>
+    <span style="color:var(--t3)" id="st-t">12 testing</span>
+  </div>
+</header>
+
+<div class="plat-bar">
+  <div class="plat-col ms">
+    <div class="pi pi-m">M</div>
+    <div><div class="pn">Meta</div><div class="ps">Facebook · Instagram · Advantage+</div></div>
+    <div class="pnote">El usuario no busca — Meta lo encuentra</div>
+  </div>
+  <div class="plat-col">
+    <div class="pi pi-g">G</div>
+    <div><div class="pn">Google</div><div class="ps">Search · YouTube · Display</div></div>
+    <div class="pnote">El usuario tiene intención — Google lo captura</div>
+  </div>
+</div>
+
+<div class="entry-wrap">
+  <div class="entry-lbl">Punto de entrada</div>
+  <div class="entry-node">¿Ya tiene cuenta en Destácame?</div>
+  <div class="forks">
+    <div class="fc"><div class="fp">NO &rarr; Usuario nuevo (ADQ)</div><div class="fl"></div></div>
+    <div class="fc"><div class="fp">SÍ &rarr; Usuario con cuenta (REACT)</div><div class="fl"></div></div>
+  </div>
+</div>
+
+<!-- ETAPA 1 AWARENESS -->
+<div class="stage-row">
+  <div class="stage-lbl">
+    <span class="sb sb-bl">Etapa 1</span>
+    <span class="stl">Awareness</span>
+    <span class="sts">Público frío — reconocimiento de marca</span>
+  </div>
+  <div class="scols">
+    <div class="scol ms">
+      <div class="pool">
+        <div class="ptop"><span class="plbl">Pool de creativos compartidos — 24 combinaciones activas</span></div>
+        <div class="lcr"><span class="lcn">LC1 · La Banca</span>
+          <span id="p-LC1-AD1" class="chip">AD1</span><span id="p-LC1-AD2" class="chip">AD2</span><span id="p-LC1-AD3" class="chip">AD3</span><span id="p-LC1-AD4" class="chip">AD4</span><span id="p-LC1-AD5" class="chip">AD5</span><span id="p-LC1-AD6" class="chip">AD6</span>
+        </div>
+        <div class="lcr"><span class="lcn">LC2 · ¿Conoces?</span>
+          <span id="p-LC2-AD1" class="chip">AD1</span><span id="p-LC2-AD2" class="chip">AD2</span><span id="p-LC2-AD3" class="chip">AD3</span>
+        </div>
+        <div class="lcr"><span class="lcn">LC3 · Telechachara</span>
+          <span id="p-LC3-AD1" class="chip">AD1</span><span id="p-LC3-AD2" class="chip">AD2</span><span id="p-LC3-AD3" class="chip">AD3</span>
+        </div>
+        <div class="pnote2">&#8627; Mismo pool para C1 y C2 — Meta reparte, ANDROMEDA pausa/escala.</div>
+      </div>
+      <div class="agrid">
+        <div class="ac"><div class="an">Advantage+ (C1)</div><div class="ad">Audiencia abierta · Todo Chile · targeting automático</div><div class="sr">&#8593; 24 creativos del pool</div><div style="display:flex;align-items:center;justify-content:space-between"><span class="lbdg">&#128279; destacame.cl</span><span class="ks">KPI: ThruPlay% · CPM</span></div></div>
+        <div class="ac"><div class="an">Intereses + LAL (C2)</div><div class="ad">Intereses finanzas, crédito, DICOM · LAL registrados 1–5%</div><div class="sr">&#8593; 24 creativos del pool</div><div style="display:flex;align-items:center;justify-content:space-between"><span class="lbdg">&#128279; destacame.cl</span><span class="ks">KPI: ThruPlay% · CPM</span></div></div>
+      </div>
+      <div class="nb">&#9888; REACT: usuarios con cuenta <strong>excluidos de Awareness</strong> vía CRM audience — no ven este contenido.</div>
+    </div>
+    <div class="scol">
+      <div class="gcmp">
+        <div class="gh"><span class="plat pg">YT</span><span class="gth">YouTube TrueView In-Stream</span><span class="gty">Alcance · sin clic directo</span></div>
+        <div><div class="gr"><div class="rau">Intereses: finanzas, créditos, deudas · Todo Chile</div><div class="rkw">TrueView 15–60s + Bumper 5–6s · Puja: CPM / Target Impression Share</div><div class="rl"><span class="lbdg">— sin landing</span><span class="rk">KPI: CPM · CPV · ThruPlay% · Alcance único</span></div></div></div>
+      </div>
+      <div class="gcmp">
+        <div class="gh"><span class="plat pg">Display</span><span class="gth">Google Display</span><span class="gty">Alcance visual · CPM</span></div>
+        <div><div class="gr"><div class="rau">Intereses financieros · sitios de finanzas personales · Todo Chile</div><div class="rkw">Imagen cuadrada, vertical, horizontal · Puja: CPM</div><div class="rl"><span class="lbdg">— sin landing</span><span class="rk">KPI: CPM · Alcance único · Frecuencia</span></div></div></div>
+      </div>
+      <div class="nb">Google NO usa Search en Awareness. YouTube y Display son exclusivos de esta etapa. <strong>Search empieza en Consideración.</strong></div>
+      <div class="nb" style="margin-top:6px">&#9888; REACT: usuarios con cuenta excluidos de audiencias frías de YouTube y Display.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DECISION 1 -->
+<div class="decwrap">
+  <div class="dp">&#9830;&nbsp; ¿Cómo interactuó el usuario con la marca?</div>
+  <div class="brs">
+    <div class="br"><span class="bsig bsbl" style="margin-top:18px">Meta: vio video</span><div class="brl"><span>reproducción</span><strong>&ge; 50%</strong></div></div>
+    <div class="br"><span class="bsig bsbl" style="margin-top:18px">Meta: engagement</span><div class="brl"><span>interactuó</span><strong>15–30 días</strong></div></div>
+    <div class="br"><span class="bsig bsam" style="margin-top:18px">Google: búsqueda activa</span><div class="brl"><span>DICOM · CMF</span><strong>Créditos</strong></div></div>
+  </div>
+</div>
+
+<!-- ETAPA 2 CONSIDERACIÓN -->
+<div class="stage-row">
+  <div class="stage-lbl">
+    <span class="sb sb-am">Etapa 2</span>
+    <span class="stl">Consideración (MOFU)</span>
+    <span class="sts">Público tibio — ya interactuó con la marca o busca activamente</span>
+  </div>
+  <div class="scols">
+    <div class="scol ms">
+      <div class="mgrid">
+        <div class="cmp">
+          <div class="cmph"><span class="plat pm">Meta</span><div><div class="cts">RMKT 50% Views</div><div class="cn">Reproducciones</div></div><span class="plat-auto-badge">⚡ Meta optimiza</span></div>
+          <div class="cmpb">
+            <div class="asub">Interactuó con anuncio 15–30D</div>
+            <div class="crr"><div class="crl">Creativo</div><div class="crn">LC1 · Vodcast Fake</div><div class="crs">Prensa / In house</div><div style="margin-top:4px"><span class="chip">P1</span><span class="chip">P2</span><span class="chip">P3</span></div></div>
+            <div class="cl"><span class="lbdg">&#128279; .cl/como-funciona</span><span class="k2">costo/reprod.</span></div>
+          </div>
+        </div>
+        <div class="cmp">
+          <div class="cmph"><span class="plat pm">Meta</span><div><div class="cts">RMKT Interacción</div><div class="cn">Tráfico</div></div><span class="plat-auto-badge">⚡ Meta optimiza</span></div>
+          <div class="cmpb">
+            <div class="asub">Seguidores de la página</div>
+            <div class="asub" style="margin-top:3px">Vio &ge;50% del video (14D)</div>
+            <div class="crr"><div class="crl">Creativo</div><div class="crn">LC2 · Segundas Oport.</div><div class="crs">3 videos + 3 imágenes</div><div style="margin-top:4px"><span class="chip">V1</span><span class="chip">V2</span><span class="chip">V3</span><span class="chip">IMG1</span><span class="chip">IMG2</span><span class="chip">IMG3</span></div></div>
+            <div class="cl"><span class="lbdg">&#128279; .cl/consultor</span><span class="k2">costo/visita</span></div>
+          </div>
+        </div>
+        <div class="cmp">
+          <div class="cmph"><span class="plat pm">Meta</span><div><div class="cts">RMKT Landing</div><div class="cn">Conv. Consultor</div></div><span class="plat-auto-badge">⚡ Meta optimiza</span></div>
+          <div class="cmpb">
+            <div class="asub">Visitó landing, no llegó al consultor (7D)</div>
+            <div class="crr"><div class="crl">Creativo</div><div class="crn">LC3 · Testimonios</div><div class="crs">Imagen + Video + CTA</div><div style="margin-top:4px"><span class="chip">V1</span><span class="chip">IMG1</span></div></div>
+            <div class="cl"><span class="lbdg">&#128279; .cl/consultor</span><span class="k2">costo/consultor</span></div>
+          </div>
+        </div>
+      </div>
+<div class="plat-auto"><span class="pai">⚡</span><div><strong style="color:rgba(180,180,220,.9)">Sin ANDROMEDA — plataforma sigue optimizando</strong><br>Meta prioriza automáticamente los creativos del adset por CTR, relevancia y conversion rate. Es la optimización nativa de la subasta — no es ANDROMEDA, pero el algoritmo igual decide qué mostrar.</div></div>
+            <div class="nb">REACT (T2): registrados sin candidates activos &rarr; mismas campañas, objetivo Login + consultor. Excluir login reciente &lt;90D.</div>
+    </div>
+    <div class="scol">
+      <div class="ch-div">Search</div>
+      <div style="font-size:11px;color:var(--t3);margin-bottom:8px;font-style:italic">Search empieza aquí. Cada tema: <span style="color:var(--adq)">ADQ</span> (nuevo) + <span style="color:var(--react)">REACT</span> (con cuenta) — mismas keywords, audiencias distintas.</div>
+      <div class="gcmp">
+        <div class="gh"><span class="plat pg">Search</span><span class="gth">DICOM informativo</span><span class="gty">2 campañas separadas</span></div>
+        <div>
+          <div class="gr"><div class="rh"><span class="ta">ADQ</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Público abierto &rarr; Registro paso 1</span></div><div class="rkw">dicom · qué es dicom · dicom chile · boletín comercial · consultar dicom gratis · informe dicom</div><div class="rl"><span class="lbdg">&#128279; home con consultor</span><span class="rk">KPI: CPL · costo/consultor</span></div></div>
+          <div class="gr"><div class="rh"><span class="tr">REACT</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Customer Match CRM &rarr; Login + consultor</span></div><div class="rkw">Mismas keywords · audiencia = solo usuarios con cuenta Destácame</div><div class="rl"><span class="lbdg">&#128279; home con consultor</span><span class="rk">Excluir login reciente &lt;30D</span></div></div>
+        </div>
+      </div>
+      <div class="gcmp">
+        <div class="gh"><span class="plat pg">Search</span><span class="gth">CMF / Informe deudas</span><span class="gty">2 campañas separadas</span></div>
+        <div>
+          <div class="gr"><div class="rh"><span class="ta">ADQ</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Público abierto &rarr; Registro entrada CMF</span></div><div class="rkw">informe cmf · ver informe cmf gratis · revisar deudas cmf · mis deudas cmf · certificado cmf · reporte cmf</div><div class="rl"><span class="lbdg">&#128279; .cl/cmf/consultor</span><span class="rk">KPI: CPL · costo/consultor</span></div></div>
+          <div class="gr"><div class="rh"><span class="tr">REACT</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Customer Match &rarr; Login + ver informe CMF</span></div><div class="rkw">Mismas keywords · mensaje: "ya tienes tu informe, ¿lo revisaste?"</div><div class="rl"><span class="lbdg">&#128279; .cl/cmf/consultor</span><span class="rk">Excluir login &lt;30D</span></div></div>
+        </div>
+      </div>
+      <div class="gcmp">
+        <div class="gh"><span class="plat pg">Search</span><span class="gth">Créditos comparativo</span><span class="gty">2 campañas separadas</span></div>
+        <div>
+          <div class="gr"><div class="rh"><span class="ta">ADQ</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Público abierto &rarr; Registro + consultor</span></div><div class="rkw">mini crédito chile · préstamo para independientes · crédito sin contrato · préstamo online · préstamo con historial malo</div><div class="rl"><span class="lbdg">&#128279; .cl/creditos/consultor</span><span class="rk">KPI: CPL · costo/consultor</span></div></div>
+          <div class="gr"><div class="rh"><span class="tr">REACT</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Registrados sin candidates &rarr; Login + consultor</span></div><div class="rkw">Mismas keywords · CRM sin crédito activo / sin candidates</div><div class="rl"><span class="lbdg">&#128279; /login &rarr; /consultor</span><span class="rk">Excluir crédito activo · login &lt;30D</span></div></div>
+        </div>
+      </div>
+      <div class="nb">Condición crítica: lista CRM sincronizada en Google Customer Match. Mismo keyword set para ADQ/REACT — sin canibalización porque las audiencias son mutuamente excluyentes.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DECISION 2 -->
+<div class="decwrap">
+  <div class="dp">&#9830;&nbsp; ¿El usuario llegó al consultor?</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;max-width:500px;margin:10px auto 0">
+    <div class="fc"><span class="bsig bsam" style="margin-bottom:4px">llegó · no se registró</span><div class="fl"></div></div>
+    <div class="fc"><span class="bsig bsam" style="margin-bottom:4px">T2 sin login</span><div class="fl"></div></div>
+  </div>
+</div>
+
+<!-- ETAPA 3 CONVERSIÓN -->
+<div class="stage-row">
+  <div class="stage-lbl">
+    <span class="sb sb-co">Etapa 3</span>
+    <span class="stl">Conversión (BOFU)</span>
+    <span class="sts">Público caliente — listo para registrarse o hacer login</span>
+  </div>
+  <div class="scols">
+    <div class="scol ms">
+      <div class="bgrid">
+        <div class="cmp">
+          <div class="cmph"><span class="plat pm">Meta</span><div><div class="cts">RMKT BOFU</div><div class="cn">Registro</div></div><span class="plat-auto-badge">⚡ Meta optimiza</span></div>
+          <div class="cmpb">
+            <div class="asub"><span class="ta" style="font-size:9px">ADQ</span> Consultó sin registrarse · T2 incompleto</div>
+            <div class="crr"><div class="crl">Creativo</div><div class="crn">Atributos + UGC</div><div class="crs">CTA tipo retail</div><div style="margin-top:4px"><span class="chip">UGC-1</span><span class="chip">UGC-2</span><span class="chip">Atrib-V1</span></div></div>
+            <div class="cl"><span class="lbdg">&#128279; .cl/registro</span><span class="k2">KPI: CPA · costo/registro</span></div>
+          </div>
+        </div>
+        <div class="cmp">
+          <div class="cmph"><span class="plat pm">Meta</span><div><div class="cts">RMKT Login</div><div class="cn">Re-engagement</div></div><span class="plat-auto-badge">⚡ Meta optimiza</span></div>
+          <div class="cmpb">
+            <div class="asub"><span class="tr" style="font-size:9px">REACT</span> Registrado sin login 30–90D</div>
+            <div class="crr"><div class="crl">Creativo</div><div class="crn">CTA Login</div><div class="crs">"Retoma donde lo dejaste"</div><div style="margin-top:4px"><span class="chip">CTA-1</span><span class="chip">CTA-2</span></div></div>
+            <div class="cl"><span class="lbdg">&#128279; app.destacame.cl</span><span class="k2">KPI: costo/login</span></div>
+          </div>
+        </div>
+      </div>
+<div class="plat-auto" style="margin-bottom:8px"><span class="pai">⚡</span><div><strong style="color:rgba(180,180,220,.9)">Sin ANDROMEDA — plataforma sigue optimizando</strong><br>Meta prioriza el creativo con mejor tasa de conversión dentro del adset. En BOFU el objetivo es Conversión o Login — Meta puja por quien tiene más probabilidad de completar esa acción.</div></div>
+            <div class="nb">Re-warming: si inactivo &gt;90D, pasar por MOFU antes de BOFU Login para no quemar la audiencia.</div>
+    </div>
+    <div class="scol">
+      <div class="ch-div">Search</div>
+      <div class="gcmp">
+        <div class="gh"><span class="plat pg">Search</span><span class="gth">Brand — siempre activa</span><span class="gty">Protege marca de competidores</span></div>
+        <div>
+          <div class="gr"><div class="rh"><span class="ta">ADQ</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Conoce la marca &rarr; Registro</span></div><div class="rkw">destacame · qué es destacame · destacame plataforma · destacame créditos · registrarse destacame</div><div class="rl"><span class="lbdg">&#128279; /registro directo</span><span class="rk">KPI: CAC · CPC</span></div></div>
+          <div class="gr"><div class="rh"><span class="tr">REACT</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Inactivos +30D &rarr; Login</span></div><div class="rkw">destacame login · entrar destacame · mi cuenta destacame · iniciar sesión destacame</div><div class="rl"><span class="lbdg">&#128279; /login directo</span><span class="rk">KPI: costo/login</span></div></div>
+        </div>
+      </div>
+      <div class="gcmp">
+        <div class="gh"><span class="plat pg">Search</span><span class="gth">Créditos transaccional — alta intención</span><span class="gty">2 campañas</span></div>
+        <div>
+          <div class="gr"><div class="rh"><span class="ta">ADQ</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Intención alta &rarr; Registro</span></div><div class="rkw">crédito rápido chile · préstamo online · crédito inmediato · crédito urgente · préstamo sin papeles</div><div class="rl"><span class="lbdg">&#128279; .cl/creditos</span><span class="rk">KPI: CAC · conv. landing</span></div></div>
+          <div class="gr"><div class="rh"><span class="tr">REACT</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Registrados sin candidates &rarr; Activar PRO+</span></div><div class="rkw">Mismas keywords · "Tu crédito ya te espera, entra y actívalo"</div><div class="rl"><span class="lbdg">&#128279; /creditos (login)</span><span class="rk">KPI: costo/activación PRO+</span></div></div>
+        </div>
+      </div>
+      <div class="gcmp">
+        <div class="gh"><span class="plat pg">Search</span><span class="gth">Competencia — Fintech · Banca · Retail</span><span class="gty">2 campañas</span></div>
+        <div>
+          <div class="gr"><div class="rh"><span class="ta">ADQ</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Ya decidió contratar, evalúa dónde</span></div><div class="rkw">mach crédito · cumplo préstamo · banco estado crédito · bci crédito · ripley crédito · scotiabank consumo</div><div class="rl"><span class="lbdg">&#128279; .cl/creditos</span><span class="rk">Imp. share vs competencia</span></div></div>
+          <div class="gr"><div class="rh"><span class="tr">REACT</span><span style="font-size:12px;font-weight:500;color:var(--t1)">Registrados sin PRO+ buscando en competencia</span></div><div class="rkw">Mismas keywords · "Ya tienes tu perfil, ¿para qué ir al banco?"</div><div class="rl"><span class="lbdg">&#128279; /creditos</span><span class="rk">KPI: costo/activación PRO+</span></div></div>
+        </div>
+      </div>
+      <div class="ch-div">Display RMKT</div>
+      <div class="gcmp dash">
+        <div class="gh"><span class="plat pg">Display</span><span class="gth">RMKT "Crédito que crece"</span><span class="gty">Solo reactivación — refuerzo de Search</span></div>
+        <div>
+          <div class="gr"><div class="rh"><span class="tr">REACT</span><span style="font-size:12px;font-weight:500;color:var(--t1)">No convirtieron en Search &rarr; Login + activar</span></div><div class="rkw">Audiencia: RMKT visitantes pág. crédito · RMKT interacciones YT. No hay ADQ — solo impacta a quienes ya interactuaron.</div><div class="rl"><span class="lbdg">&#128279; .cl/creditos</span><span class="rk">KPI: CPA · % cobertura</span></div></div>
+        </div>
+      </div>
+      <div class="nb">&#9733; Verificar restricción legal de marcas antes de activar keywords de BancoEstado, BCI, Scotiabank, etc.</div>
+    </div>
+  </div>
+</div>
+
+<div style="padding:14px 20px;text-align:center;font-size:11px;color:var(--t3);border-top:0.5px solid var(--b)">
+  ANDROMEDA Journey Map &middot; ProPlus &middot; Destácame &nbsp;&middot;&nbsp; Basado en Google Funnel detalle v2
+</div>
+
+<script>
+const M={'LC1-AD1':{tp:[14.2,18.3,22.8,24.1],cpm:[3.4,3.1,2.9,2.7],imp:[120,680,2100,4800]},'LC1-AD2':{tp:[8.1,9.4,11.2,10.8],cpm:[5.1,5.3,5.4,5.6],imp:[110,590,1800,2100]},'LC1-AD3':{tp:[19.4,21.8,24.6,26.2],cpm:[2.8,2.6,2.5,2.3],imp:[180,920,2400,6200]},'LC1-AD4':{tp:[12.3,13.8,15.1,14.9],cpm:[4.2,4.1,4.0,4.1],imp:[80,420,1200,1800]},'LC1-AD5':{tp:[6.8,8.1,9.4,8.7],cpm:[6.8,7.0,7.1,7.4],imp:[60,310,900,1100]},'LC1-AD6':{tp:[16.9,18.4,20.3,21.7],cpm:[3.5,3.3,3.2,3.0],imp:[130,700,1900,4100]},'LC2-AD1':{tp:[17.8,19.6,21.4,22.9],cpm:[3.1,2.9,2.8,2.6],imp:[140,760,2200,5100]},'LC2-AD2':{tp:[10.4,12.6,14.7,14.2],cpm:[4.6,4.5,4.4,4.5],imp:[85,450,1400,2000]},'LC2-AD3':{tp:[23.1,26.2,28.9,30.4],cpm:[2.4,2.2,2.1,1.9],imp:[190,980,2800,7800]},'LC3-AD1':{tp:[16.1,18.4,20.8,22.3],cpm:[3.4,3.2,3.1,2.9],imp:[120,650,2000,4600]},'LC3-AD2':{tp:[9.2,10.7,11.8,11.3],cpm:[5.9,6.0,6.1,6.2],imp:[55,295,950,1200]},'LC3-AD3':{tp:[25.4,28.6,31.2,33.1],cpm:[2.2,2.0,1.9,1.7],imp:[200,1040,3100,8400]}};
+let mode='est',wk=2,tpTh=18;
+function chipState(id){const c=M[id];if(!c)return't';const tp=c.tp[wk],cpm=c.cpm[wk],imp=c.imp[wk];if(imp<2000)return't';if(tp>=tpTh&&cpm<=5.0)return'w';if(tp<tpTh*0.7||cpm>6.2)return'p';return't';}
+function updateChips(){let tw=0,tp=0;Object.keys(M).forEach(id=>{const el=document.getElementById('p-'+id);if(!el)return;const st=chipState(id);el.className='chip'+(mode==='and'?' andro':'');if(mode==='and'){el.className+=' '+st;}if(st==='w')tw++;if(st==='p')tp++;});document.getElementById('st-w').textContent=tw+' ganadores';document.getElementById('st-p').textContent=tp+' pausados';document.getElementById('st-t').textContent=(12-tw-tp)+' testing';}
+function setMode(m){mode=m;document.getElementById('tb-est').classList.toggle('on',m==='est');document.getElementById('tb-and').classList.toggle('on',m==='and');document.getElementById('wk-ctrl').classList.toggle('vis',m==='and');document.getElementById('tp-ctrl').classList.toggle('vis',m==='and');document.getElementById('stats').classList.toggle('vis',m==='and');updateChips();}
+function setWk(w){wk=w;[1,2,3].forEach(i=>document.getElementById('wk'+i).classList.toggle('on',i===w));updateChips();}
+function onTP(){tpTh=+document.getElementById('sl-tp').value;document.getElementById('vl-tp').textContent=tpTh+'%';updateChips();}
+updateChips();
+</script>
+</body>
+</html>
